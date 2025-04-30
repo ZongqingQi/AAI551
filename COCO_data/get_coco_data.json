@@ -1,0 +1,8 @@
+{
+    "annotations_file" : "annotations_2017/instances_val2017.json",
+    "data_type" : "people",
+    "total_pictures" : 200,
+    "obj_in_picture" : 2,
+    "savedir_frontPart" : "./coco_images_"
+
+}
