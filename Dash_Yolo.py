@@ -14,7 +14,8 @@ def detect_objects(img_dir, output_dir, info_file, conf=0.75, threshold=1, targe
     target_map = {
         "person": ["person"],
         "pets": ["cat", "dog"],
-        "vehicles": ["car", "truck", "bus", "motorcycle"]
+        "vehicles": ["car", "truck", "bus", "motorcycle"],
+        "airplane" : ["airplane"]
     }
 
     model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
@@ -88,9 +89,9 @@ def encode_image(image_path):
     return "data:image/jpeg;base64," + encoded
 
 
-# -------------------------------
-# Dash Layout
-# -------------------------------
+# --------------------
+# Dash Layout (pass parameters and run the GUI logic)
+# --------------------
 app.layout = html.Div([
     html.H2("YOLOv5 Image Object Detection Dashboard"),
 
@@ -104,7 +105,8 @@ app.layout = html.Div([
                 options=[
                     {"label": "Person", "value": "person"},
                     {"label": "Pets (cat/dog)", "value": "pets"},
-                    {"label": "Vehicles (car/truck/bus)", "value": "vehicles"}
+                    {"label": "Vehicles (car/truck/bus)", "value": "vehicles"},
+                    {"label": "Aircrafts (Airplane/Helicoptor)", "value": "airplane"}
                 ],
                 value="person",  # default
                 style={"width": "40%"}
@@ -156,8 +158,9 @@ app.layout = html.Div([
 ])
 
 
-# --------------------------------------------------------------
+# ------------------------------
 # Run Detection on Click
+# ------------------------------
 @app.callback(
     [Output("result-area", "children"),
      Output("person-histogram", "figure")],
