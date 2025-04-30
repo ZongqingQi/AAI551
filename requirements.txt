@@ -1,0 +1,5 @@
+dash>=2.0.0
+opencv-python
+torch>=1.9.0
+pycocotools
+requests
