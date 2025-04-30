@@ -21,6 +21,8 @@ elif data_type == "vehicles":
     label_list = ['car', 'truck', 'bus', 'motorcycle', 'bicycle']  # vehicles
 elif data_type == "train":
     label_list = ['train'] # railroad trains 
+elif data_type == "airplane":
+    label_list = ['airplane']  # airplane
 else:
     print("Sorry we only want the data related to people, pets, vehicles, and train. Maybe more labels in future version")
 
