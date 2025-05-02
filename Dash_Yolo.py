@@ -66,12 +66,12 @@ def detect_objects(img_dir, output_dir, info_file, conf=0.75, threshold=1, targe
 latest_frame_base64 = None
 video_thread_running = False
 video_thread = None
-intrusion_message = "Live Detection (Camera)"
+intrusion_message = "Live Detection (WebCamera)"
 
-def video_capture_thread(target_type="person", conf=0.5):
+def video_capture_thread(output_dir, target_type="person", conf=0.5, threshold=1):
     global latest_frame_base64, video_thread_running, intrusion_message
 
-    cap = cv2.VideoCapture(0)  # Use webcam in MacOS (MacBook)
+    cap = cv2.VideoCapture(0)  # Use webcam on my MacBook
     model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
     model.conf = conf
 
@@ -91,17 +91,23 @@ def video_capture_thread(target_type="person", conf=0.5):
         detections = results.pandas().xyxy[0]
         count = detections[detections['name'].isin(target_map[target_type])].shape[0]
 
-        if count > 0:
+        if count >= threshold:
             results.render()
             out_img = results.ims[0]
+            # save the screenshot of the object detected frame
+            file_name = f"Intrusion_Detected_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.jpg"
+            out_path = os.path.join(output_dir, file_name)
+            print(out_path)
+            cv2.imwrite(out_path, out_img)
+            # present the same image on the web page GUI
             _, buffer = cv2.imencode('.jpg', out_img)
             latest_frame_base64 = "data:image/jpeg;base64," + base64.b64encode(buffer).decode()
             intrusion_message = f"Intrusion Detected - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-
+        # no need to detect every frame, set 0.2 second as a interval is enough
         time.sleep(0.2)
 
     cap.release()
-    intrusion_message = "Live Detection (Camera)"
+    # intrusion_message = "Live Detection (Camera)"
 
 # --------------------------------------------------------------------------------------------------
 def extract_frames_from_video(video_path, output_dir, frame_interval=10):
@@ -259,7 +265,7 @@ def run_detection(n_clicks, img_dir, out_dir, conf, threshold, target_type, inpu
     if img_dir == "webcam":
         if not video_thread_running:
             video_thread_running = True
-            threading.Thread(target=video_capture_thread, args=(target_type, conf), daemon=True).start()
+            threading.Thread(target=video_capture_thread, args=(out_dir, target_type, conf, threshold), daemon=True).start()
         return [], dash.no_update
     
     temp_frame_dir = "tempFrame"
@@ -270,7 +276,7 @@ def run_detection(n_clicks, img_dir, out_dir, conf, threshold, target_type, inpu
     elif input_type == "webcam":
         if not video_thread_running:
             video_thread_running = True
-            video_thread = threading.Thread(target=video_capture_thread, args=(target_type, conf), daemon=True)
+            video_thread = threading.Thread(target=video_capture_thread, args=(out_dir, target_type, conf, threshold), daemon=True)
             video_thread.start()
         return [], dash.no_update
     else:
