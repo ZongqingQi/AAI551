@@ -2,15 +2,19 @@ import os
 import base64
 import json
 import cv2
-import dash
-from dash import dcc, html, Input, Output, State
 import torch
+from dash import dcc, html, Input, Output, State
+import dash
 import threading
 import time
 from datetime import datetime
 
+from StaticDetection import StaticDetection
+from FrameExtractor import FrameExtractor
+
 app = dash.Dash(__name__)
 
+'''
 def detect_objects(img_dir, output_dir, info_file, conf=0.75, threshold=1, target_type="person"):
     # Target corrspond to label in dataset
     target_map = {
@@ -61,6 +65,7 @@ def detect_objects(img_dir, output_dir, info_file, conf=0.75, threshold=1, targe
         json.dump(info_list, f, indent=2)
 
     return info_list, info_list_2
+'''
 
 # --------------------------------------------------------------------------------------------------
 latest_frame_base64 = None
@@ -70,6 +75,9 @@ intrusion_message = "Live Detection (WebCamera)"
 
 def video_capture_thread(output_dir, target_type="person", conf=0.5, threshold=1):
     global latest_frame_base64, video_thread_running, intrusion_message
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     cap = cv2.VideoCapture(0)  # Use webcam on my MacBook
     model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
@@ -110,6 +118,7 @@ def video_capture_thread(output_dir, target_type="person", conf=0.5, threshold=1
     # intrusion_message = "Live Detection (Camera)"
 
 # --------------------------------------------------------------------------------------------------
+'''
 def extract_frames_from_video(video_path, output_dir, frame_interval=10):
     # Get a frame and skip several frame, decided by frame_interval
     cap = cv2.VideoCapture(video_path)
@@ -130,7 +139,7 @@ def extract_frames_from_video(video_path, output_dir, frame_interval=10):
         frame_count += 1
     cap.release()
     print(f"Total frame saved: {saved_count}")
-
+'''
 # --------------------------------------------------------------------------------------------------
 def encode_image(image_path):
     with open(image_path, 'rb') as f:
@@ -271,7 +280,9 @@ def run_detection(n_clicks, img_dir, out_dir, conf, threshold, target_type, inpu
     temp_frame_dir = "tempFrame"
     if input_type == "videos":
         os.makedirs(temp_frame_dir, exist_ok=True)
-        extract_frames_from_video(img_dir, temp_frame_dir)
+        # extract_frames_from_video(img_dir, temp_frame_dir)
+        extractor = FrameExtractor(frame_interval=10)
+        extractor.extract(img_dir, temp_frame_dir)
         img_dir_to_use = temp_frame_dir
     elif input_type == "webcam":
         if not video_thread_running:
@@ -283,7 +294,9 @@ def run_detection(n_clicks, img_dir, out_dir, conf, threshold, target_type, inpu
         img_dir_to_use = img_dir
 
     info_path = os.path.join(out_dir, "output_info.json")
-    result_info, result_info_2 = detect_objects(img_dir_to_use, out_dir, info_path, conf, threshold, target_type)
+    # result_info, result_info_2 = detect_objects(img_dir_to_use, out_dir, info_path, conf, threshold, target_type)
+    detector_static = StaticDetection(conf, threshold, target_type)
+    result_info, result_info_2 = detector_static.detect(img_dir_to_use, out_dir, info_path)
 
     # === Generate Hist ===
     person_counts = [info["num_persons"] for info in result_info_2]
