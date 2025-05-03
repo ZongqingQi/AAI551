@@ -16,6 +16,9 @@ Note: The Internet is required for downloading the Yolo Model when the program i
 ### Step 2: Download the COCO picture dataset. (optional)
 Yes, you can download this dataset, which is helpful, but you can also use your image set; the directory structure is like a folder containing several pictures and remembers only pictures.
 
+And, I have already uploaded some coco data pictures and a video I took by myself, you can find them here in Google Drive: 
+https://drive.google.com/drive/folders/1T65zeN1BnGPY3EpvGYwx1I5J0sXTi24Y?usp=drive_link
+
 If you decide to download this dataset, run the script get_COCO_data.py. The parameters are read from the JSON file get_coco_data.json.
 Parameters by sequence from top to down are:
 1)	annotation file path
