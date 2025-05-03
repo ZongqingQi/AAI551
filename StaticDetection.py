@@ -3,6 +3,10 @@ import cv2
 import json
 import torch
 
+'''
+This class is used to perform object recognition on static images, and the recognition results will be saved in a new directory.
+'''
+
 class StaticDetection:
     def __init__(self, conf=0.75, threshold=1, target_type="person"):
         self.conf = conf
