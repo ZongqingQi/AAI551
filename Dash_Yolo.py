@@ -12,6 +12,10 @@ from datetime import datetime
 from StaticDetection import StaticDetection
 from FrameExtractor import FrameExtractor
 
+'''
+The logic of this program is to perform entity detection statically and dynamically, which is used for intrusion detection and congestion detection. The specific scenario is determined by the selected detection object and the appropriate threshold.
+'''
+
 app = dash.Dash(__name__)
 
 '''
