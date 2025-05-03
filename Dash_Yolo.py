@@ -68,6 +68,7 @@ def detect_objects(img_dir, output_dir, info_file, conf=0.75, threshold=1, targe
 '''
 
 # --------------------------------------------------------------------------------------------------
+# Dynamic Detection (Live Stream)
 latest_frame_base64 = None
 video_thread_running = False
 video_thread = None
@@ -115,6 +116,7 @@ def video_capture_thread(output_dir, target_type="person", conf=0.5, threshold=1
         time.sleep(0.2)
 
     cap.release()
+    latest_frame_base64 = None
     # intrusion_message = "Live Detection (Camera)"
 
 # --------------------------------------------------------------------------------------------------
@@ -241,9 +243,11 @@ def update_live_image(n):
     Input("stop-button", "n_clicks")
 )
 def stop_video_stream(n_clicks):
-    global video_thread_running
+    global video_thread_running, latest_frame_base64, intrusion_message
     if n_clicks > 0:
         video_thread_running = False
+        latest_frame_base64 = None
+        intrusion_message = "Live Detection (Camera)"
     return False
 
 # -------------------------------
