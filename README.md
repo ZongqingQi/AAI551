@@ -78,7 +78,7 @@ To use this mode, we need some specific settings,
 ### Moreover:
 Don't hesitate to contact me if you have any problems with this program, including environment preparation and running the program.
 My Email address:
-zqi10@stevens.edu
+zqiu12@stevens.edu
 zongqingqi@gmail.com
 
 ### Directory structure:
