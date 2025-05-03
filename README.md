@@ -78,8 +78,11 @@ To use this mode, we need some specific settings,
 ### Moreover:
 Don't hesitate to contact me if you have any problems with this program, including environment preparation and running the program.
 My Email address:
-zqiu12@stevens.edu
+
+zqi10@stevens.edu
 zongqingqi@gmail.com
+zqiu12@stevens.edu
+
 
 ### Directory structure:
 ![directory structure](screenshots/4.png)
