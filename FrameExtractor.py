@@ -1,6 +1,10 @@
 import os
 import cv2
 
+'''
+The logic of this class is to extract a certain proportion of frames from the video and cache them as images.
+'''
+
 class FrameExtractor:
     def __init__(self, frame_interval=10):
         self.frame_interval = frame_interval
